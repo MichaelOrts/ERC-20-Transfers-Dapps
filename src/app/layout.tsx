@@ -18,8 +18,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-    title: "Frontend Template",
-    description: "Template for frontend projects generated from nextjs with tailwind, shadcn and Viem, Wagmi, RainbowKit for web3.",
+    title: "ERC-20-Transfers-Dapps",
+    description: "Dapps to transfer ERC-20 tokens.",
 };
 
 interface RootLayoutProps {
@@ -38,7 +38,7 @@ export default function RootLayout({children}: RootLayoutProps) {
                 <CustomRainbowKitProvider>
                     <div className="flex flex-col flex-grow min-h-screen">
                         <Header />
-                        <main className="flex flex-col flex-grow items-center justify-center bg-gray-100">
+                        <main className="flex flex-col flex-grow justify-center bg-gray-100 p-8">
                             {children}
                         </main>
                         <Footer />

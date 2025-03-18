@@ -8,7 +8,7 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ReactNode } from 'react';
 
 const config = getDefaultConfig({
-    appName: 'Frontend Template',
+    appName: 'ERC-20-Transfers-Dapps',
     projectId: '4b89f8ce0af198f46977dc74b4aaba58',
     chains: [hardhat, sepolia],
     ssr: true, 

@@ -10,7 +10,7 @@ const Header: React.FC = () => {
                 <div className="flex items-center space-x-2">
                     <Image src="/logo.png" alt="Insert Logo Here" width={40} height={40} />
                     <h1 className="text-2xl font-bold">
-                        <Link href="/">Main</Link>
+                        <Link href="/">ERC-20-Transfers-Dapps</Link>
                     </h1>
                 </div>
                 <div>
