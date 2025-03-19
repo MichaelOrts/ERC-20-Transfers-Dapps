@@ -1,4 +1,4 @@
-const IERC20_ABI = [
+export const IERC20_ABI = [
     {
         "constant": true,
         "inputs": [],
@@ -215,5 +215,3 @@ const IERC20_ABI = [
         "type": "event"
     }
 ];
-
-module.exports = IERC20_ABI;
