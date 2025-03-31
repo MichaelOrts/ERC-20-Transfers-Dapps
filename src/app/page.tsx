@@ -6,8 +6,8 @@ import TransactionsUI from "../components/TransactionsUI";
 import SendTokensUI from "../components/SendTokensUI";
 import PendingTransactionsUI from "../components/PendingTransactionsUI";
 import { publicClientSepolia, publicClientHardhat } from "@/utils/client";
-import { useAccount, useReadContracts } from "wagmi";
-import { erc20Abi, formatEther } from "viem";
+import { useAccount, useReadContracts, useWriteContract } from "wagmi";
+import { erc20Abi, formatEther, parseEther } from "viem";
 import { toast } from "sonner";
 
 export default function Home(): JSX.Element {
@@ -43,6 +43,18 @@ export default function Home(): JSX.Element {
         ]).flat()
     });
 
+    const { writeContract, status: sendTokensStatus, error: sendTokensError } = useWriteContract();
+
+    useEffect(() => {
+        if (sendTokensError) {
+            toast.error("Error send tokens", {
+                description: sendTokensError.message,
+                duration: 5000,
+                style: {backgroundColor: "oklch(0.808 0.114 19.571)"}
+            });
+        }
+    }, [sendTokensError]);
+
     useEffect(() => {
         if (refetchTokensConstantsError) {
             toast.error("Error adding token", {
@@ -55,7 +67,6 @@ export default function Home(): JSX.Element {
 
     useEffect(() => {
         setPublicClient(chain?.name === "Hardhat" ? publicClientHardhat : publicClientSepolia);
-        setTokensAddress([]);
     }, [publicClient, chain]);
 
     useEffect(() => {
@@ -75,10 +86,9 @@ export default function Home(): JSX.Element {
         const storedData = window.localStorage.getItem("tokens");
         if (storedData) {
             setTokensAddress(JSON.parse(storedData));
-            refetchTokensConstants();
-            refetchBalances();
+            toast.success("get tokens");
         }
-    }, [refetchTokensConstants, refetchBalances]);
+    }, []);
 
     useEffect(() => {
         window.localStorage.setItem("tokens", JSON.stringify(tokensAddress));
@@ -108,12 +118,21 @@ export default function Home(): JSX.Element {
         }
         setTokensAddress((prevTokens) => prevTokens.filter((address) => address !== tokenAddress));
     }
+
+    const sendTokens = (tokenAddress: `0x${string}`, receiverAddress: `0x${string}`, amount: string) => {
+        writeContract({
+            address: tokenAddress,
+            abi: erc20Abi,
+            functionName: 'transfer',
+            args: [receiverAddress, parseEther(amount)]
+        });
+    }
     
     return (
         <div className="grid grid-flow-row grid-cols-2 gap-8 text-4xl text-bold">
             <BalancesUI isConnected={isConnected} datas={tokensDatas} addToken={addToken} removeToken={removeToken} status={refetchBalancesStatus} error={refetchBalancesError} />
             <TransactionsUI />
-            <SendTokensUI />
+            <SendTokensUI isConnected={isConnected} sendTokens={sendTokens} status={sendTokensStatus} error={sendTokensError} />
             <PendingTransactionsUI />
         </div>
     );
