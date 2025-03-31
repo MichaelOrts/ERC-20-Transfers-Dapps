@@ -1,20 +1,14 @@
 'use client'
 
-import React, { useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 import TableUI from './TableUI';
-import { publicClientSepolia, publicClientHardhat } from '@/utils/client';
 import { useAccount, useWatchContractEvent } from 'wagmi';
 import { erc20Abi, formatEther } from 'viem';
 
-const TransactionsUI: React.FC = () => {
+const TransactionsUI: FC = () => {
 
-    const [publicClient, setPublicClient] = useState<typeof publicClientSepolia>(publicClientSepolia);
     const [data, setData] = useState<[string, string, string, string][]>([]);
-    const { address, chain } = useAccount();
-
-    useEffect(() => {
-            setPublicClient(chain?.name === "Hardhat" ? publicClientHardhat : publicClientSepolia);
-        }, [publicClient, chain]);
+    const { address } = useAccount();
 
     useWatchContractEvent({
         abi: erc20Abi,
