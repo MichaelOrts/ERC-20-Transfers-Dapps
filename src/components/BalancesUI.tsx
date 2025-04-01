@@ -8,10 +8,11 @@ import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 import TableUI from './TableUI';
 import { type ReadContractsErrorType } from '@wagmi/core';
 import { isAddressValid } from '@/utils/utils';
+import { formatUnits } from 'viem';
 
 interface TableUIProps {
     isConnected: boolean;
-    datas: [string, `0x${string}`, string][];
+    datas: Map<`0x${string}`, [string, string, number, bigint]>;//[string, `0x${string}`, string][];
     addToken: (tokenAddress: `0x${string}`) => void;
     removeToken: (tokenAddress: `0x${string}`) => void;
     status: string | undefined;
@@ -24,9 +25,13 @@ const BalancesUI: FC<TableUIProps> = ({isConnected, datas, addToken, removeToken
     const [validTokenAddress, setValidTokenAddress] = useState<boolean>(false);
     const [inputFocused, setInputFocused] = useState<boolean>(false);
 
+    const tokensArray = Array.from(datas.entries()).map(([address, [name, symbol, decimals, balance]]) => {
+        return [name, address, formatUnits(balance, decimals) + " " + symbol] as [string, `0x${string}`, string];
+    });
+
     return (
         <div className="border-3 rounded-xl p-4 space-y-4">
-            <TableUI tableCaption="Tokens balances" headCaption={["Token", "Address", "Balance"]} cellDatas={datas} />
+            <TableUI tableCaption="Tokens balances" headCaption={["Token", "Address", "Balance"]} cellDatas={tokensArray} />
             {inputFocused && validTokenAddress === false &&
                 <Alert className="border-red-500" variant={undefined}>
                 <AlertTitle className="font-bold text-red-500">Token Address Error</AlertTitle>
